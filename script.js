@@ -316,7 +316,25 @@ async function sendToPole(id, prompt) {
         if (data.error) throw new Error(data.error);
         
         pole.response = data.content || '[Пустой ответ]';
+        
         responseDiv.innerHTML = pole.response;
+        // --- АВТОКОПИРОВАНИЕ ---
+const autoCopyEnabled = document.getElementById('autoCopyMode')?.checked;
+if (autoCopyEnabled) {
+    const currentIndex = state.poles.findIndex(p => p.id === pole.id);
+    const nextIndex = (currentIndex + 1) % state.poles.length;
+    const nextPole = state.poles[nextIndex];
+    
+    if (nextPole) {
+        const nextTextarea = document.getElementById(`${nextPole.id}-prompt`);
+        if (nextTextarea) {
+            const prefix = `Ответ Полюса ${pole.symbol} (${pole.name}):\n${pole.response}\n\nКомментарий наблюдателя ◉:\n`;
+            nextTextarea.value = prefix;
+            addLog(`[${pole.symbol} → ${nextPole.symbol}] Автокопирование ответа`);
+        }
+    }
+}
+// --- КОНЕЦ АВТОКОПИРОВАНИЯ ---
         addLog(`[${pole.symbol}] Ответ получен (${pole.response.length} симв.)`);
         
     } catch (err) {
