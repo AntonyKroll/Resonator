@@ -70,6 +70,7 @@ export default async function handler(req, res) {
         console.log('OpenRouter response status:', response.status);
         
         const data = await response.json();
+        console.log('📄 Полный ответ OpenRouter:', JSON.stringify(data).substring(0, 500));
         console.log('OpenRouter response data:', JSON.stringify(data).substring(0, 500));
         
         if (data.error) {
@@ -77,7 +78,22 @@ export default async function handler(req, res) {
             throw new Error(data.error.message || JSON.stringify(data.error));
         }
 
-        const content = data.choices[0].message.content;
+        // Безопасное извлечение контента (Kimi может возвращать null или другую структуру)
+let content = '';
+if (data.choices && data.choices[0]) {
+    const choice = data.choices[0];
+    if (choice.message && choice.message.content) {
+        content = choice.message.content;
+    } else if (choice.text) {
+        content = choice.text;
+    } else {
+        console.log('⚠️ Нестандартная структура ответа:', JSON.stringify(choice).substring(0, 200));
+        content = '[Ответ получен, но структура не распознана]';
+    }
+} else {
+    console.log('❌ Нет choices в ответе:', JSON.stringify(data).substring(0, 200));
+    content = '[Пустой ответ от API]';
+}
         console.log('✅ Success! Content length:', content.length);
         
         res.status(200).json({ content });
