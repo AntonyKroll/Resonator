@@ -26,14 +26,21 @@
         </div>
         
         <div class="observer-panel">
-            <div class="observer-header">
-                <span class="pole-symbol">◉</span>
-                <h3>Наблюдатель <span style="color: #e67e22;">(мета-поле)</span></h3>
-            </div>
+    <div class="observer-header">
+        <span class="pole-symbol">◉</span>
+        <h3>Наблюдатель <span style="color: #e67e22;">(мета-поле)</span></h3>
+    </div>
+    <div class="observer-row">
+        <div class="observer-input">
             <textarea id="metaLog" placeholder="Апноэ... мета-комментарий ко всем полюсам"></textarea>
-            <div class="log-preview" id="logPreview"></div>
-            <div class="protocol" id="protocol"></div>
+            <button id="sendMetaBtn" style="margin-top: 8px; width: 100%; border-color: #e67e22; color: #e67e22;">Отправить мету ◉</button>
         </div>
+        <div class="observer-log">
+            <div class="log-preview" id="logPreview"></div>
+        </div>
+    </div>
+    <div class="protocol" id="protocol"></div>
+</div>
     </div>
     
     <script src="poles.config.js"></script>
