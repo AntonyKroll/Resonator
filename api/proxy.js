@@ -78,12 +78,20 @@ export default async function handler(req, res) {
             throw new Error(data.error.message || JSON.stringify(data.error));
         }
 
-        // Безопасное извлечение контента (Kimi может возвращать null или другую структуру)
+        // Безопасное извлечение контента (Kimi-k2.5 возвращает reasoning вместо content)
 let content = '';
 if (data.choices && data.choices[0]) {
     const choice = data.choices[0];
-    if (choice.message && choice.message.content) {
-        content = choice.message.content;
+    if (choice.message) {
+        // Kimi-k2.5 кладёт ответ в reasoning, а не в content
+        if (choice.message.content) {
+            content = choice.message.content;
+        } else if (choice.message.reasoning) {
+            content = choice.message.reasoning;
+        } else {
+            console.log('⚠️ Нестандартная структура ответа:', JSON.stringify(choice).substring(0, 200));
+            content = '[Ответ получен, но структура не распознана]';
+        }
     } else if (choice.text) {
         content = choice.text;
     } else {
