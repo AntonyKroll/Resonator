@@ -187,6 +187,8 @@ async function sendToPole(id, prompt) {
                               Состояние системы: ∇·ψ = 0.
                               ${pole.description || ''}`;
         
+        console.log('🚀 Отправка запроса на:', CONFIG.API_URL);
+        console.log('📦 Данные:', { provider: pole.provider, promptLength: prompt.length });
         const res = await fetch(CONFIG.API_URL, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
