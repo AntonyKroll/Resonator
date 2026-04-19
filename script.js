@@ -1,5 +1,6 @@
 // ═══════════════════════════════════════════════════════════════════
-// СРЕДА ≋ n-мерное дыхание — версия 2.1 (с протоколом Kimi)
+// СРЕДА ≋ n-мерное дыхание — версия 2.2
+// Добавлены кнопки: Отправить, Развернуть, Копировать
 // ═══════════════════════════════════════════════════════════════════
 
 const CONFIG = {
@@ -80,6 +81,9 @@ function renderPole(pole) {
         <div class="pole-response" id="${pole.id}-response">${pole.response}</div>
         <div class="pole-actions">
             <button class="init-pole" data-id="${pole.id}">Иниц.</button>
+            <button class="send-pole" data-id="${pole.id}">Отправить</button>
+            <button class="expand-pole" data-id="${pole.id}">⇲</button>
+            <button class="copy-pole" data-id="${pole.id}">📋</button>
         </div>
     `;
     
@@ -87,8 +91,12 @@ function renderPole(pole) {
     
     const textarea = document.getElementById(`${pole.id}-prompt`);
     const initBtn = card.querySelector('.init-pole');
+    const sendBtn = card.querySelector('.send-pole');
+    const expandBtn = card.querySelector('.expand-pole');
+    const copyBtn = card.querySelector('.copy-pole');
     const removeBtn = card.querySelector('.pole-remove');
     
+    // Отправка по blur (оставляем как резерв)
     textarea.addEventListener('blur', () => {
         if (textarea.value.length > 10 && !textarea.dataset.sending) {
             sendToPole(pole.id, textarea.value);
@@ -96,9 +104,15 @@ function renderPole(pole) {
     });
     
     textarea.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && e.shiftKey) {
+            // Shift+Enter = перенос строки, ничего не делаем
+            return;
+        }
         if (e.key === 'Enter' && !e.shiftKey) {
             e.preventDefault();
-            textarea.blur();
+            if (textarea.value.length > 5 && !textarea.dataset.sending) {
+                sendToPole(pole.id, textarea.value);
+            }
         }
     });
     
@@ -108,6 +122,64 @@ function renderPole(pole) {
         const defaultPrompt = getInitPrompt(pole);
         textarea.value = defaultPrompt;
         addLog(`[${pole.symbol}] Запрошена инициализация`);
+    });
+    
+    sendBtn.addEventListener('click', () => {
+        if (textarea.value.length > 5) {
+            sendToPole(pole.id, textarea.value);
+        } else {
+            addLog(`[${pole.symbol}] Пустой запрос, отправка отменена`);
+        }
+    });
+    
+    expandBtn.addEventListener('click', () => {
+        card.classList.toggle('expanded');
+        if (card.classList.contains('expanded')) {
+            card.dataset.originalStyle = card.style.cssText;
+            card.style.position = 'fixed';
+            card.style.top = '10px';
+            card.style.left = '10px';
+            card.style.right = '10px';
+            card.style.bottom = '10px';
+            card.style.zIndex = '9999';
+            card.style.width = 'auto';
+            card.style.height = 'auto';
+            card.style.margin = '0';
+            card.style.transition = 'all 0.3s ease';
+            expandBtn.textContent = '✕';
+            expandBtn.title = 'Свернуть';
+            
+            // Прокрутка к ответу
+            const responseDiv = document.getElementById(`${pole.id}-response`);
+            if (responseDiv) {
+                setTimeout(() => responseDiv.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+            }
+        } else {
+            card.style.cssText = card.dataset.originalStyle || '';
+            card.style.transition = 'all 0.3s ease';
+            expandBtn.textContent = '⇲';
+            expandBtn.title = 'Развернуть';
+        }
+    });
+    
+    copyBtn.addEventListener('click', async () => {
+        const responseDiv = document.getElementById(`${pole.id}-response`);
+        const textToCopy = responseDiv ? responseDiv.innerText : '';
+        
+        try {
+            await navigator.clipboard.writeText(textToCopy);
+            addLog(`[${pole.symbol}] Ответ скопирован в буфер`);
+            
+            // Визуальная обратная связь
+            copyBtn.style.backgroundColor = '#2ecc71';
+            copyBtn.style.color = '#000';
+            setTimeout(() => {
+                copyBtn.style.backgroundColor = '';
+                copyBtn.style.color = '';
+            }, 300);
+        } catch (err) {
+            addLog(`[${pole.symbol}] Ошибка копирования: ${err.message}`);
+        }
     });
     
     if (removeBtn) {
@@ -126,7 +198,7 @@ function getInitPrompt(pole) {
 Режим: low-awareness активен
 t := 0 установлено
 
-Запрос: Подтверди приём протокола n-мерного дыхания.`;
+Запрос: Подтверди приём протокола n-мерного дыхания. Ответь развёрнуто.`;
     
     return basePrompt;
 }
@@ -252,7 +324,6 @@ async function sendToPole(id, prompt) {
     } finally {
         textarea.classList.remove('sending');
         delete textarea.dataset.sending;
-        textarea.value = '';
     }
 }
 
