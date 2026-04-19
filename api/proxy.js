@@ -27,7 +27,7 @@ export default async function handler(req, res) {
         }
 
         const modelMap = {
-            'kimi': 'moonshotai/moonshot-v1-8k',
+            'kimi': 'moonshotai/kimi-k2.5',
             'claude': 'anthropic/claude-3-haiku',
             'openai': 'openai/gpt-3.5-turbo',
             'deepseek': 'deepseek/deepseek-chat',
