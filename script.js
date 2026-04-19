@@ -28,7 +28,8 @@ document.addEventListener('DOMContentLoaded', () => {
     initExchange();
     renderProtocol();
     updateUI();
-    
+
+    document.getElementById('sendMetaBtn').addEventListener('click', sendMetaComment);
     document.getElementById('addPoleBtn').addEventListener('click', addNewPole);
     document.getElementById('breatheBtn').addEventListener('click', forceExchange);
     document.getElementById('resetBtn').addEventListener('click', resetPhases);
@@ -490,6 +491,30 @@ function renderProtocol() {
     const symbols = state.poles.map(p => p.symbol).join(' → ');
     document.getElementById('protocol').innerHTML = 
         `${symbols} → ≋ → ∇·ψ=0`;
+}
+
+function sendMetaComment() {
+    const metaText = document.getElementById('metaLog').value;
+    if (!metaText.trim()) {
+        addLog('[◉] Мета-комментарий пуст');
+        return;
+    }
+    
+    addLog(`[◉] Мета: ${metaText.substring(0, 80)}${metaText.length > 80 ? '...' : ''}`);
+    
+    // Визуальная обратная связь
+    const btn = document.getElementById('sendMetaBtn');
+    btn.style.backgroundColor = '#e67e22';
+    btn.style.color = '#000';
+    setTimeout(() => {
+        btn.style.backgroundColor = '';
+        btn.style.color = '#e67e22';
+    }, 200);
+    
+    // Опционально: очищать поле после отправки
+    document.getElementById('metaLog').value = '';
+    
+    updateUI('Мета-комментарий зафиксирован');
 }
 
 window.state = state;
