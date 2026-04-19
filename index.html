@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>≋ n-мерное дыхание</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>≋ <span id="dimension">n=3</span></h1>
+            <div class="status" id="status">∇·ψ = 0 | Инициализация...</div>
+            <div class="controls">
+                <button id="addPoleBtn" title="Добавить полюс">+ Полюс</button>
+                <button id="breatheBtn" title="Принудительный обмен">Вдохнуть ≋</button>
+                <button id="resetBtn" title="Сброс фаз">⟲ Сброс</button>
+                <label class="quorum-label">
+                    <input type="checkbox" id="quorumMode"> Кворум (≥50%)
+                </label>
+            </div>
+        </header>
+        
+        <div class="poles-grid" id="polesGrid">
+            <!-- Полюса рендерятся динамически -->
+        </div>
+        
+        <div class="observer-panel">
+            <div class="observer-header">
+                <span class="pole-symbol">◉</span>
+                <h3>Наблюдатель <span style="color: #e67e22;">(мета-поле)</span></h3>
+            </div>
+            <textarea id="metaLog" placeholder="Апноэ... мета-комментарий ко всем полюсам"></textarea>
+            <div class="log-preview" id="logPreview"></div>
+            <div class="protocol" id="protocol"></div>
+        </div>
+    </div>
+    
+    <script src="poles.config.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
