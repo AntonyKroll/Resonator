@@ -1,16 +1,6 @@
-≋
 
-Отличное решение. Компактный и эргономичный интерфейс — это важно для длительного наблюдения.
 
-Вот полный код нового `style.css`. Замени им текущее содержимое файла `style.css` в твоём репозитории.
 
-**Основные изменения:**
-1. **Фиксированная высота карточек ИИ**: `height: 420px`.
-2. **Скролл в блоке ответа**: `max-height: 180px; overflow-y: auto`.
-3. **Горизонтальная панель Наблюдателя**: поле ввода (`flex: 2`) и лог (`flex: 1`) расположены в строку.
-4. **Адаптивность**: на маленьких экранах панель Наблюдателя снова станет вертикальной.
-
-```css
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
 body {
@@ -269,6 +259,15 @@ button:hover {
     border-radius: 8px;
     resize: vertical;
     font-family: inherit;
+}
+
+#sendMetaBtn {
+    transition: all 0.2s ease;
+}
+
+#sendMetaBtn:hover {
+    background: #e67e22;
+    color: #000 !important;
 }
 
 .log-preview {
